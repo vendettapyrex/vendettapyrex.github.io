@@ -22,8 +22,9 @@
       align-items: center;
       justify-content: center;
       height: 100vh;
-      text-align: center;
+      text-align: left;
       white-space: pre-wrap;
+      padding: 20px;
     }
 
     .boot, .terminal {
@@ -90,7 +91,6 @@
 <!-- BOOT SCREEN -->
 <div class="screen" id="boot-screen">
   <div class="boot" id="boot-text"></div>
-  <!-- Logo image -->
   <img class="boot-logo" id="boot-logo"
        src="ranger-logo.png"
        alt="75th Ranger Regiment Logo" />
@@ -120,8 +120,34 @@
   const commands = {
     "whoami": "75th Ranger Regiment | Army Special Operations Command",
     "cat mission.txt": `The 75th Ranger Regiment is the U.S. Army's premier large-scale special operations force.\nRangers are very trained combatants focused on dominating the battlefield.`,
-    "cat high command.txt": `Formed during World War II, Rangers trace their lineage to the 1st Ranger Battalion, activated in 1942.\nThe modern 75th Ranger Regiment was officially activated on February 3, 1986.`,
-    "cat structure.txt": `The Regiment consists of:\n- 1st Ranger Battalion\n- 2nd Ranger Battalion\n- 3rd Ranger Battalion\n- Regimental Special Troops Battalion\n- Regimental Military Intelligence Battalion`,
+    "cat high command.txt": `
+<b>75TH Ranger Regiment HICOM</b>
+
+ Commanding Officer - Major General, Kipsuh.
+ Executive Officer - Brigadier General, Rangers_aprentice122.
+ Command Sergeant Major - Sergeant Major, nutncrunch.
+
+<b>1st Ranger Battalion HICOM</b>
+
+ Commanding Officer - Colonel, PrestigiousNorman.
+ Executive Officer - Lieutenant Colonel, fiKlaus.
+ Battalion Sergeant Major - Sergeant Major, koala_Gamer124.
+
+<b>2nd Ranger Battalion HICOM</b>
+
+ Commanding Officer - Colonel, pine_net.
+ Executive Officer - Lieutenant Colonel, officerpopo.
+ Battalion Sergeant Major - Sergeant Major, Jalosmn.
+    `,
+    "cat structure.txt": `
+<b>1st Ranger Battalion</b>
+
+The 1st Ranger Battalion is considered the most elite battalion within the 75th Ranger Regiment. They are trained in FPS, TPS and Wargames, and are known for their discipline and extensive training.
+
+<b>2nd Ranger Battalion</b>
+
+The 2nd Ranger Battalion is the backbone of the Regiment. They are in charge with the training of personnel and combat.
+    `,
     "cat motto.txt": `"Rangers Lead the Way!"`,
     "credits": `made with ❤️ by VendettaPyrex`,
     "help": `Available commands:\n- whoami\n- cat mission.txt\n- cat high command.txt\n- cat structure.txt\n- cat motto.txt\n- credits\n- help\n- clear`,
@@ -154,12 +180,19 @@
   }
 
   function printOutput(text) {
-    const lines = text.split('\n');
-    lines.forEach(line => {
+    const isHTML = /<[^>]+>/.test(text);
+    if (isHTML) {
       const div = document.createElement("div");
-      div.textContent = line;
+      div.innerHTML = text.replace(/\n/g, "<br>");
       terminalOutput.appendChild(div);
-    });
+    } else {
+      const lines = text.split('\n');
+      lines.forEach(line => {
+        const div = document.createElement("div");
+        div.textContent = line;
+        terminalOutput.appendChild(div);
+      });
+    }
     window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
   }
 
@@ -193,3 +226,4 @@
 
 </body>
 </html>
+
