@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>75th Ranger Regiment Terminal</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: #000;
+      color: red;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 16px;
+      line-height: 1.5;
+      height: 100%;
+      overflow-y: auto;
+    }
+
+    .screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+      white-space: pre-wrap;
+    }
+
+    .boot, .terminal {
+      padding: 20px;
+      width: 100%;
+      max-width: 1000px;
+      box-sizing: border-box;
+      white-space: pre-wrap;
+    }
+
+    .boot {
+      color: red;
+      animation: flicker 0.1s infinite alternate;
+    }
+
+    @keyframes flicker {
+      from { opacity: 1; }
+      to { opacity: 0.95; }
+    }
+
+    .boot-logo {
+      max-width: 150px;
+      margin-bottom: 20px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .input-line {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 10px;
+    }
+
+    .prompt {
+      color: red;
+      user-select: none;
+    }
+
+    .input {
+      outline: none;
+      border: none;
+      background: none;
+      color: red;
+      font-family: inherit;
+      font-size: inherit;
+      flex-grow: 1;
+    }
+
+    a {
+      color: #ff5555;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<!-- BOOT SCREEN -->
+<div class="screen" id="boot-screen">
+  <div class="boot" id="boot-text"></div>
+  <img class="boot-logo" id="boot-logo"
+       src="https://upload.wikimedia.org/wikipedia/commons/6/65/Distinctive_unit_insignia_of_the_75th_Ranger_Regiment.svg"
+       alt="75th Ranger Regiment Logo" />
+</div>
+
+<!-- TERMINAL -->
+<div class="terminal hidden" id="terminal">
+  <div id="terminal-output"></div>
+  <div class="input-line">
+    <span class="prompt">user@army-terminal:~$</span>
+    <input class="input" type="text" id="command-input" autofocus autocomplete="off" spellcheck="false" />
+  </div>
+</div>
+
+<script>
+  const bootLines = [
+    "Initializing Zanance's USAR database...",
+    "Loading BIOS version 75RR-1.0.3...",
+    "Checking memory... OK",
+    "Detecting Ranger Units... OK",
+    "Establishing secure link...",
+    "Decrypting mission files...",
+    "Loading 75th Ranger Regiment terminal...",
+    "System ready."
+  ];
+
+  const commands = {
+    "whoami": "75th Ranger Regiment | Army Special Operations Command",
+    "cat mission.txt": `The 75th Ranger Regiment is the U.S. Army's premier large-scale special operations force.\nRangers are very trained combatants focused on dominating the battlefield.`,
+    "cat high command.txt": `Formed during World War II, Rangers trace their lineage to the 1st Ranger Battalion, activated in 1942.\nThe modern 75th Ranger Regiment was officially activated on February 3, 1986.`,
+    "cat structure.txt": `The Regiment consists of:\n- 1st Ranger Battalion\n- 2nd Ranger Battalion\n- 3rd Ranger Battalion\n- Regimental Special Troops Battalion\n- Regimental Military Intelligence Battalion`,
+    "cat motto.txt": `"Rangers Lead the Way!"`,
+    "credits": `made with ❤️ by VendettaPyrex`,
+    "help": `Available commands:\n- whoami\n- cat mission.txt\n- cat high command.txt\n- cat structure.txt\n- cat motto.txt\n- credits\n- help\n- clear`,
+    "clear": "clear"
+  };
+
+  const bootText = document.getElementById("boot-text");
+  const bootScreen = document.getElementById("boot-screen");
+  const terminal = document.getElementById("terminal");
+  const terminalOutput = document.getElementById("terminal-output");
+  const input = document.getElementById("command-input");
+
+  let bootLineIndex = 0;
+
+  function showBootLine() {
+    if (bootLineIndex < bootLines.length) {
+      bootText.textContent += bootLines[bootLineIndex] + "\n";
+      bootLineIndex++;
+      setTimeout(showBootLine, 500);
+    } else {
+      setTimeout(startTerminal, 1000);
+    }
+  }
+
+  function startTerminal() {
+    bootScreen.classList.add("hidden");
+    terminal.classList.remove("hidden");
+    printOutput("Welcome to the 75th Ranger Regiment Terminal.\nType 'help' to see available commands.\n");
+    input.focus();
+  }
+
+  function printOutput(text) {
+    const lines = text.split('\n');
+    lines.forEach(line => {
+      const div = document.createElement("div");
+      div.textContent = line;
+      terminalOutput.appendChild(div);
+    });
+    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+  }
+
+  function handleCommand(command) {
+    printOutput(`user@army-terminal:~$ ${command}`);
+    const response = commands[command.trim().toLowerCase()];
+    if (response === "clear") {
+      terminalOutput.innerHTML = "";
+      return;
+    }
+
+    if (response) {
+      printOutput(response);
+    } else {
+      printOutput(`Command not found: ${command}`);
+    }
+  }
+
+  input.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      const command = input.value.trim();
+      if (command) {
+        handleCommand(command);
+      }
+      input.value = "";
+    }
+  });
+
+  window.onload = showBootLine;
+</script>
+
+</body>
+</html>
